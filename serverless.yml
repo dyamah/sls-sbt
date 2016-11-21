@@ -1,0 +1,47 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: xyz-hello-sls
+
+provider:
+  name: aws
+  runtime: java8
+  stage: dev
+  region: ap-northeast-1
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "events:*"
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "iam:PassRole"
+      Resource: "arn:aws:iam::*:role/AWS_Events_Invoke_Targets"
+
+package:
+  artifact: target/scala-2.11/hello.jar
+
+functions:
+  recursiveCount:
+    handler: com.dyamah.hellosls.Handler
+    memorySize: 256 # optional, default is 1024
+    timeout: 10 # optional, default is 6
+    events:
+      - schedule:
+          rate: rate(1 minute)
+          enabled: false
+          input:
+            id: value1
+            count: value2
+            stageParams:
+              stage: dev
